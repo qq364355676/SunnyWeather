@@ -3,6 +3,7 @@ package com.lcx.sunnyweather.ui.weather
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
@@ -39,14 +40,17 @@ class WeatherActivity : AppCompatActivity() {
         if (viewModel.lng.isEmpty()) {
             viewModel.lng = intent.getStringExtra("location_lng") ?: ""
         }
+        Log.e("TAG","经度：${viewModel.lng}")
         if (viewModel.lat.isEmpty()) {
             viewModel.lat = intent.getStringExtra("location_lat") ?: ""
         }
+        Log.e("TAG","纬度：${viewModel.lat}")
         if (viewModel.placeName.isEmpty()) {
             viewModel.placeName = intent.getStringExtra("place_name") ?: ""
         }
         viewModel.weatherLiveData.observe(this, Observer { result ->
             val weather = result.getOrNull()
+//            Log.e("TAG", "天气：${weather.toString()}")
             if (weather != null) {
                 showWeatherInfo(weather)
             } else {
@@ -54,6 +58,7 @@ class WeatherActivity : AppCompatActivity() {
                 result.exceptionOrNull()?.printStackTrace()
             }
         })
+        viewModel.refreshWeather(viewModel.lng, viewModel.lat)
     }
 
     private fun showWeatherInfo(weather: Weather) {
@@ -63,7 +68,7 @@ class WeatherActivity : AppCompatActivity() {
         // 填充实况天气数据，now.xml
         binding.nowLayoutInclude.currentTemp.text = "${realtime.temperature.toInt()}℃"
         binding.nowLayoutInclude.currentSky.text = getSky(realtime.skycon).info
-        binding.nowLayoutInclude.currentAqi.text = "空气指数 ${realtime.airQuality.aqi}"
+        binding.nowLayoutInclude.currentAqi.text = "空气指数:${realtime.airQuality.aqi.chn.toInt()}"
         binding.nowLayoutInclude.nowLayout.setBackgroundResource(getSky(realtime.skycon).bg)
         // 填充预报天气，forecast.xml
         binding.forecastLayoutInclude.forecastLayout.removeAllViews()
@@ -71,7 +76,8 @@ class WeatherActivity : AppCompatActivity() {
         for (i in 0 until days) {
             val skycon = daily.skycon[i]
             val temp = daily.temperature[i]
-            val view = LayoutInflater.from(this).inflate(R.layout.forecast_item,binding.forecastLayoutInclude.forecastLayout,false)
+            val view = LayoutInflater.from(this)
+                    .inflate(R.layout.forecast_item,binding.forecastLayoutInclude.forecastLayout,false)
             val dateInfo = view.findViewById(R.id.dateInfo) as TextView
             val skyIcon = view.findViewById<ImageView>(R.id.skyIcon)
             val skyInfo = view.findViewById<TextView>(R.id.skyInfo)

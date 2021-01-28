@@ -11,7 +11,7 @@ import android.content.Context
 class MyApplication : Application() {
     companion object{
         lateinit var context: Context
-        const val TOKEN = ""
+        const val TOKEN = "gAncELjwWmE19Dxj"
     }
 
     override fun onCreate() {

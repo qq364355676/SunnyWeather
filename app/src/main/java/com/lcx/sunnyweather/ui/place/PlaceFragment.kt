@@ -3,6 +3,7 @@ package com.lcx.sunnyweather.ui.place
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
+import android.util.Log
 import android.view.View
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
@@ -36,8 +37,8 @@ class PlaceFragment: Fragment(R.layout.fragment_place) {
                 putExtra("place_name", place.name)
             }
             startActivity(intent)
-            activity?.finish()
-            return
+//            activity?.finish()
+//            return
         }
         val linearLayoutManager = LinearLayoutManager(activity)
         binding.recyclerView.layoutManager = linearLayoutManager
@@ -45,6 +46,7 @@ class PlaceFragment: Fragment(R.layout.fragment_place) {
         binding.recyclerView.adapter = adapter
         binding.searchPlaceEdit.addTextChangedListener { editable: Editable? ->
             val content = editable.toString()
+            Log.e("TAG", "搜索结果：$content")
             if (content.isNotEmpty()) {
                 viewModel.searchPlace(content)
             } else {

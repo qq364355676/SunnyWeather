@@ -69,11 +69,7 @@ class FragmentBindingDelegate<VB:ViewBinding>(private val clazz: Class<VB>):
 class BindingViewHolder<VB: ViewBinding>(val binding: VB): RecyclerView.ViewHolder(binding.root)
 
 inline fun<reified T: ViewBinding> newBindingViewHolder(parent: ViewGroup) : BindingViewHolder<T>{
-    val binding = T::class.java.getMethod(
-        "inflate",
-        LayoutInflater::class.java,
-        parent::class.java,
-        Boolean::class.java
-    ).invoke(null, LayoutInflater.from(parent.context), parent, false) as T
+    val method = T::class.java.getMethod("inflate",LayoutInflater::class.java, ViewGroup::class.java, Boolean::class.java)
+    val binding = method.invoke(null, LayoutInflater.from(parent.context), parent, false) as T
     return BindingViewHolder(binding)
 }
