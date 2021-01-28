@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.lcx.sunnyweather.MainActivity
 import com.lcx.sunnyweather.R
 import com.lcx.sunnyweather.bindView
 import com.lcx.sunnyweather.databinding.FragmentPlaceBinding
@@ -24,12 +25,12 @@ import com.lcx.sunnyweather.util.showToast
 class PlaceFragment: Fragment(R.layout.fragment_place) {
 
     val viewModel by lazy { ViewModelProviders.of(this).get(PlaceViewModel::class.java) }
-    private val binding: FragmentPlaceBinding by bindView()
+    val binding: FragmentPlaceBinding by bindView()
     private lateinit var adapter: PlaceAdapter
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        if (viewModel.isPlaceSaved()) {
+        if (activity is MainActivity && viewModel.isPlaceSaved()) {
             val place = viewModel.getSavePlace()
             val intent = Intent(context, WeatherActivity::class.java).apply {
                 putExtra("location_lng", place.location.lng)
@@ -37,8 +38,8 @@ class PlaceFragment: Fragment(R.layout.fragment_place) {
                 putExtra("place_name", place.name)
             }
             startActivity(intent)
-//            activity?.finish()
-//            return
+            activity?.finish()
+            return
         }
         val linearLayoutManager = LinearLayoutManager(activity)
         binding.recyclerView.layoutManager = linearLayoutManager
