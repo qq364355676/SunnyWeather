@@ -47,7 +47,6 @@ class PlaceFragment: Fragment(R.layout.fragment_place) {
         binding.recyclerView.adapter = adapter
         binding.searchPlaceEdit.addTextChangedListener { editable: Editable? ->
             val content = editable.toString()
-            Log.e("TAG", "搜索结果：$content")
             if (content.isNotEmpty()) {
                 viewModel.searchPlace(content)
             } else {
